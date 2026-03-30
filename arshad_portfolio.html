@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arshad TK — Cyber Security Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#00ff88;--g2:#00cc66;--g3:#004422;--bg:#030d06;--bg2:#061208;--bg3:#0a1f0e;--border:#0d2e14;--text:#a8d4b0;--text2:#4a8a5a}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;overflow-x:hidden}
+
+canvas#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+.wrap{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:0 24px 100px}
+
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--border);animation:fadeDown 0.8s ease both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.logo{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--g);letter-spacing:4px;position:relative;text-decoration:none}
+.logo::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--g);animation:lineGrow 1.2s 0.5s ease forwards}
+@keyframes lineGrow{to{width:100%}}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:11px;color:var(--text2);text-decoration:none;letter-spacing:3px;transition:color 0.2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--g);transition:width 0.3s}
+.nav-links a:hover{color:var(--g)}
+.nav-links a:hover::after{width:100%}
+
+/* HERO */
+.hero{padding:80px 0 64px;border-bottom:1px solid var(--border)}
+.hero-row{display:grid;grid-template-columns:1fr 200px;gap:32px;align-items:center}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;animation:fadeUp 0.7s 0.3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.ping{width:8px;height:8px;border-radius:50%;background:var(--g);position:relative;flex-shrink:0}
+.ping::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--g);animation:ripple 2s infinite}
+@keyframes ripple{0%{transform:scale(1);opacity:0.8}100%{transform:scale(2.5);opacity:0}}
+.eyebrow-txt{font-size:11px;color:var(--g2);letter-spacing:4px}
+h1{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(36px,6vw,72px);line-height:1;letter-spacing:2px;margin-bottom:20px;animation:fadeUp 0.7s 0.5s ease both}
+h1 .line1{color:#fff;display:block}
+h1 .line2{color:var(--g);display:block}
+h1 .line3{color:var(--text2);display:block;font-size:0.5em;letter-spacing:6px;margin-top:8px}
+.hero-desc{font-size:13px;color:var(--text);line-height:1.9;max-width:460px;margin-bottom:32px;animation:fadeUp 0.7s 0.7s ease both;border-left:2px solid var(--g3);padding-left:16px}
+.btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp 0.7s 0.9s ease both}
+.btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;padding:13px 28px;text-decoration:none;border:1px solid;display:inline-block;transition:all 0.25s;position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:rgba(0,255,136,0.1);transition:left 0.3s}
+.btn:hover::before{left:0}
+.btn-fill{background:var(--g);color:var(--bg);border-color:var(--g);font-weight:700}
+.btn-fill:hover{background:transparent;color:var(--g)}
+.btn-ghost{background:transparent;color:var(--g2);border-color:var(--g3)}
+.btn-ghost:hover{border-color:var(--g);color:var(--g)}
+
+/* HEX BADGE */
+.hex-badge{width:180px;height:180px;position:relative;display:flex;align-items:center;justify-content:center;animation:fadeUp 0.7s 0.6s ease both}
+.hex-badge svg{position:absolute;top:0;left:0;width:100%;height:100%;animation:rotateSlow 12s linear infinite}
+@keyframes rotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.hex-inner{text-align:center;z-index:1}
+.hex-num{font-family:'Orbitron',monospace;font-size:36px;font-weight:900;color:var(--g);display:block}
+.hex-lbl{font-size:10px;color:var(--text2);letter-spacing:3px;margin-top:4px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:48px;animation:fadeUp 0.7s 1.1s ease both}
+.stat{background:var(--bg2);border:1px solid var(--border);padding:16px;text-align:center;transition:border-color 0.3s,transform 0.3s}
+.stat:hover{border-color:var(--g);transform:translateY(-3px)}
+.stat-n{font-family:'Orbitron',monospace;font-size:24px;color:var(--g);display:block}
+.stat-l{font-size:10px;color:var(--text2);letter-spacing:2px;margin-top:4px}
+
+/* SECTIONS */
+section{padding:64px 0;border-bottom:1px solid var(--border)}
+.sec-label{font-size:10px;color:var(--g2);letter-spacing:5px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.sec-label::before{content:'//';color:var(--g3)}
+.sec-title{font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:#fff;margin-bottom:36px;letter-spacing:2px}
+.sec-title span{color:var(--g)}
+
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.proj-card{background:var(--bg2);border:1px solid var(--border);padding:28px;position:relative;overflow:hidden;transition:border-color 0.3s,transform 0.3s;cursor:default}
+.proj-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);transform:translateX(-100%);transition:transform 0.5s}
+.proj-card:hover::before{transform:translateX(100%)}
+.proj-card:hover{border-color:var(--g2);transform:translateY(-4px)}
+.proj-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--g);transition:height 0.4s}
+.proj-card:hover::after{height:100%}
+.proj-num{font-family:'Orbitron',monospace;font-size:11px;color:var(--g3);margin-bottom:16px;letter-spacing:2px}
+.proj-title{font-family:'Orbitron',monospace;font-size:15px;color:#fff;margin-bottom:10px;letter-spacing:1px}
+.proj-desc{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:18px}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:10px;padding:3px 10px;border:1px solid var(--g3);color:var(--g2);letter-spacing:1px}
+.proj-link{font-size:11px;color:var(--g);letter-spacing:2px;text-decoration:none;transition:letter-spacing 0.2s;display:inline-block}
+.proj-link:hover{letter-spacing:4px}
+
+/* TOOLS */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tool{background:var(--bg2);border:1px solid var(--border);padding:22px;transition:all 0.3s;position:relative}
+.tool:hover{border-color:var(--g);background:var(--bg3)}
+.tool-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tool-name{font-family:'Orbitron',monospace;font-size:14px;color:var(--g);letter-spacing:1px}
+.tool-cat{font-size:9px;padding:3px 8px;background:var(--g3);color:var(--g2);letter-spacing:2px}
+.tool-desc{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px}
+.bar{height:2px;background:var(--border);overflow:hidden;margin-top:10px}
+.bar-fill{height:100%;background:var(--g);width:0;transition:width 1.4s ease}
+
+/* TERMINAL */
+.term{background:#020a04;border:1px solid var(--border);margin-top:48px;overflow:hidden}
+.term-bar{background:#061008;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.tb{width:11px;height:11px;border-radius:50%}
+.term-body{padding:22px;font-size:13px;line-height:2.1}
+.tl{display:flex;gap:10px}
+.ps{color:var(--g)}.cmd{color:#fff}
+.out{color:var(--text2);padding-left:26px;display:block}
+.outh{color:var(--g);padding-left:26px;display:block}
+.typed{overflow:hidden;white-space:nowrap;border-right:2px solid var(--g);width:0;animation:type1 1.5s 1.5s steps(40) forwards,blink 0.7s infinite}
+.typed2{overflow:hidden;white-space:nowrap;width:0;animation:type1 1.2s 3.5s steps(35) forwards}
+.typed3{overflow:hidden;white-space:nowrap;width:0;animation:type1 1s 5.2s steps(30) forwards}
+@keyframes type1{to{width:100%}}
+@keyframes blink{50%{border-color:transparent}}
+.cursor2{display:inline-block;width:8px;height:14px;background:var(--g);vertical-align:middle;animation:blink2 1s infinite}
+@keyframes blink2{50%{opacity:0}}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.c-card{background:var(--bg2);border:1px solid var(--border);padding:22px;text-decoration:none;display:block;transition:all 0.3s;position:relative;overflow:hidden}
+.c-card::before{content:'';position:absolute;inset:0;background:rgba(0,255,136,0.03);opacity:0;transition:opacity 0.3s}
+.c-card:hover::before{opacity:1}
+.c-card:hover{border-color:var(--g);transform:translateY(-2px)}
+.c-label{font-size:10px;color:var(--text2);letter-spacing:4px;margin-bottom:10px}
+.c-icon{font-family:'Orbitron',monospace;font-size:20px;color:var(--g);margin-bottom:10px;display:block}
+.c-val{font-size:12px;color:var(--text);line-height:1.5}
+
+/* FOOTER */
+footer{padding:36px 0;display:flex;justify-content:space-between;align-items:center}
+.ft{font-size:11px;color:var(--text2);letter-spacing:2px}
+
+/* SCROLL ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .hero-row{grid-template-columns:1fr}
+  .hex-badge{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:1fr}
+  .nav-links{gap:16px}
+  h1{font-size:clamp(32px,10vw,60px)}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="wrap">
+  <nav>
+    <a class="logo" href="#">ARSHAD_TK</a>
+    <div class="nav-links">
+      <a href="#about">ABOUT</a>
+      <a href="#projects">PROJECTS</a>
+      <a href="#tools">TOOLS</a>
+      <a href="#contact">CONTACT</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero" id="about">
+    <div class="hero-row">
+      <div>
+        <div class="hero-eyebrow"><div class="ping"></div><span class="eyebrow-txt">AVAILABLE FOR WORK</span></div>
+        <h1>
+          <span class="line1">ARSHAD</span>
+          <span class="line2">TK</span>
+          <span class="line3">CYBER SECURITY</span>
+        </h1>
+        <p class="hero-desc">Ethical hacker and penetration tester focused on web application security, network auditing, and vulnerability research. Securing systems before the bad guys do.</p>
+        <div class="btns">
+          <a class="btn btn-fill" href="mailto:arshadtk767@gmail.com">GET IN TOUCH</a>
+          <a class="btn btn-ghost" href="https://github.com/arshad9061" target="_blank">GITHUB</a>
+        </div>
+      </div>
+      <div class="hex-badge">
+        <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="90,8 164,50 164,130 90,172 16,130 16,50" stroke="#00ff88" stroke-width="1" fill="none" stroke-dasharray="4 3" opacity="0.5"/>
+          <polygon points="90,22 152,58 152,122 90,158 28,122 28,58" stroke="#00cc66" stroke-width="0.5" fill="none" opacity="0.3"/>
+          <circle cx="90" cy="90" r="50" stroke="#00ff88" stroke-width="0.5" stroke-dasharray="3 4" fill="none" opacity="0.4"/>
+        </svg>
+        <div class="hex-inner">
+          <span class="hex-num">PEN</span>
+          <div class="hex-lbl">TESTER</div>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="stat-n">3+</span><div class="stat-l">PROJECTS</div></div>
+      <div class="stat"><span class="stat-n">4</span><div class="stat-l">TOOLS</div></div>
+      <div class="stat"><span class="stat-n">CTF</span><div class="stat-l">BATTLES</div></div>
+      <div class="stat"><span class="stat-n">100%</span><div class="stat-l">ETHICAL</div></div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="fade-in">
+    <div class="sec-label">PORTFOLIO</div>
+    <div class="sec-title">FEATURED <span>PROJECTS</span></div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="proj-num">PROJECT_01</div>
+        <div class="proj-title">VULN SCANNER</div>
+        <p class="proj-desc">Python-based tool to detect common web vulnerabilities including SQLi, XSS, and CSRF attacks automatically.</p>
+        <div class="proj-tags"><span class="tag">PYTHON</span><span class="tag">SQLi</span><span class="tag">XSS</span><span class="tag">CSRF</span></div>
+        <a class="proj-link" href="#">VIEW_PROJECT →</a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-num">PROJECT_02</div>
+        <div class="proj-title">FIREWALL LAB</div>
+        <p class="proj-desc">Configured pfSense firewall rules to block malicious traffic and harden the network perimeter against intrusions.</p>
+        <div class="proj-tags"><span class="tag">pfSENSE</span><span class="tag">NETWORK</span><span class="tag">DEFENSE</span></div>
+        <a class="proj-link" href="#">VIEW_PROJECT →</a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-num">PROJECT_03</div>
+        <div class="proj-title">CTF WRITEUPS</div>
+        <p class="proj-desc">Multiple CTF competitions — cryptography, reverse engineering, and exploitation challenges documented and solved.</p>
+        <div class="proj-tags"><span class="tag">CRYPTO</span><span class="tag">RE</span><span class="tag">EXPLOIT</span></div>
+        <a class="proj-link" href="#">VIEW_WRITEUPS →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools" class="fade-in">
+    <div class="sec-label">ARSENAL</div>
+    <div class="sec-title">TOOLS &amp; <span>SKILLS</span></div>
+    <div class="tools-grid">
+      <div class="tool">
+        <div class="tool-header"><span class="tool-name">NMAP</span><span class="tool-cat">RECON</span></div>
+        <p class="tool-desc">Network discovery and port scanning. Detects open ports, services, versions, and operating systems.</p>
+        <div class="bar"><div class="bar-fill" data-w="90"></div></div>
+      </div>
+      <div class="tool">
+        <div class="tool-header"><span class="tool-name">WIRESHARK</span><span class="tool-cat">ANALYSIS</span></div>
+        <p class="tool-desc">Real-time packet capture and protocol analysis. Detects suspicious and malicious network traffic.</p>
+        <div class="bar"><div class="bar-fill" data-w="85"></div></div>
+      </div>
+      <div class="tool">
+        <div class="tool-header"><span class="tool-name">WIFITE</span><span class="tool-cat">WIRELESS</span></div>
+        <p class="tool-desc">Automated wireless attack tool for Linux targeting WEP/WPA/WPS networks for Wi-Fi auditing.</p>
+        <div class="bar"><div class="bar-fill" data-w="75"></div></div>
+      </div>
+      <div class="tool">
+        <div class="tool-header"><span class="tool-name">NIKTO</span><span class="tool-cat">WEB SCAN</span></div>
+        <p class="tool-desc">Web server scanner detecting vulnerabilities, misconfigurations, and outdated software versions.</p>
+        <div class="bar"><div class="bar-fill" data-w="80"></div></div>
+      </div>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <div class="tb" style="background:#ff5f57"></div>
+        <div class="tb" style="background:#febc2e"></div>
+        <div class="tb" style="background:#28c840"></div>
+        <span style="font-size:11px;color:var(--text2);margin-left:10px;letter-spacing:1px">arshad@kali — bash</span>
+      </div>
+      <div class="term-body">
+        <div class="tl"><span class="ps">arshad@kali:~$</span><span class="cmd typed">&nbsp;nmap -sV --script vuln 192.168.1.0/24</span></div>
+        <span class="out typed2">Starting Nmap 7.94 — Vulnerability scan in progress...</span>
+        <span class="outh typed3">PORT 80/tcp OPEN — Apache 2.4.52 — CVE-2021-41773 DETECTED</span>
+        <div class="tl" style="margin-top:8px"><span class="ps">arshad@kali:~$</span>&nbsp;<span class="cursor2"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="fade-in">
+    <div class="sec-label">REACH OUT</div>
+    <div class="sec-title">GET IN <span>TOUCH</span></div>
+    <div class="contact-grid">
+      <a class="c-card" href="mailto:arshadtk767@gmail.com">
+        <div class="c-label">EMAIL</div>
+        <span class="c-icon">@</span>
+        <div class="c-val">arshadtk767@gmail.com</div>
+      </a>
+      <a class="c-card" href="https://www.linkedin.com/in/arshad-tk-2b1905369/" target="_blank">
+        <div class="c-label">LINKEDIN</div>
+        <span class="c-icon">in</span>
+        <div class="c-val">arshad-tk-2b1905369</div>
+      </a>
+      <a class="c-card" href="https://github.com/arshad9061" target="_blank">
+        <div class="c-label">GITHUB</div>
+        <span class="c-icon">gh</span>
+        <div class="c-val">github.com/arshad9061</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span class="ft">© 2025 ARSHAD TK</span>
+    <span class="ft">CYBER SECURITY PORTFOLIO &nbsp;<span class="cursor2"></span></span>
+  </footer>
+</div>
+
+<script>
+// Matrix rain background
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+const cols = Math.floor(canvas.width / 18);
+const drops = Array.from({length: cols}, () => Math.random() * -100);
+const chars = '01アウエカサタナハマヤラワABCDEF<>/{}[]';
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(3,13,6,0.06)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = '13px Share Tech Mono';
+  for (let i = 0; i < drops.length; i++) {
+    const ch = chars[Math.floor(Math.random() * chars.length)];
+    const bright = Math.random() > 0.95;
+    ctx.fillStyle = bright ? '#aaffcc' : '#003318';
+    ctx.fillText(ch, i * 18, drops[i] * 18);
+    if (drops[i] * 18 > canvas.height && Math.random() > 0.97) drops[i] = 0;
+    drops[i] += 0.4;
+  }
+}
+setInterval(drawMatrix, 45);
+
+// Skill bar animation on scroll
+const bars = document.querySelectorAll('.bar-fill');
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.width = e.target.dataset.w + '%';
+      barObs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.3});
+bars.forEach(b => barObs.observe(b));
+
+// Fade-in on scroll
+const fades = document.querySelectorAll('.fade-in');
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      fadeObs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.1});
+fades.forEach(f => fadeObs.observe(f));
+</script>
+</body>
+</html>
