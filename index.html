@@ -42,6 +42,155 @@ body:has(a:hover) #cur2,body:has(button:hover) #cur2{width:60px;height:60px;bord
 .amb2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,212,255,0.08),transparent 70%);top:50%;right:-100px;animation-duration:25s;animation-delay:-10s}
 .amb3{width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,107,0.06),transparent 70%);bottom:10%;left:30%;animation-duration:30s;animation-delay:-18s}
 @keyframes ambientDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(40px,-50px)}66%{transform:translate(-30px,35px)}}
+
+/* ── 🎮 MATRIX RAIN (replaces old konami screen) ── */
+#matrix-screen{
+  position:fixed;inset:0;z-index:20000;
+  background:#000;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:1.5rem;
+  opacity:0;visibility:hidden;
+  transition:opacity .5s,visibility .5s;
+  font-family:'JetBrains Mono',monospace;
+}
+#matrix-screen.show{opacity:1;visibility:visible}
+#matrix-canvas{position:absolute;inset:0;z-index:0}
+.matrix-overlay-content{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;gap:1.2rem;
+  pointer-events:none;
+}
+.matrix-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.5rem,7vw,5rem);
+  font-weight:900;
+  color:#00ff41;
+  text-shadow:0 0 20px #00ff41,0 0 60px rgba(0,255,65,0.5);
+  animation:matrixPulse .8s ease-in-out infinite alternate;
+  letter-spacing:-.02em;
+  text-align:center;
+}
+@keyframes matrixPulse{from{text-shadow:0 0 10px #00ff41,0 0 40px rgba(0,255,65,0.4)}to{text-shadow:0 0 30px #00ff41,0 0 80px rgba(0,255,65,0.7),0 0 120px rgba(0,255,65,0.3)}}
+.matrix-sub{
+  font-size:.72rem;letter-spacing:.25em;
+  color:rgba(0,255,65,0.5);text-align:center;
+}
+.matrix-code-lines{
+  display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  font-size:.6rem;color:rgba(0,255,65,0.3);
+}
+.matrix-close{
+  pointer-events:all;
+  font-size:.62rem;letter-spacing:.2em;
+  color:rgba(0,255,65,0.35);cursor:pointer;
+  transition:color .3s,border-color .3s;
+  text-transform:uppercase;padding:.5rem 1.2rem;
+  border:1px solid rgba(0,255,65,0.2);border-radius:50px;
+  background:rgba(0,255,65,0.04);
+}
+.matrix-close:hover{color:#00ff41;border-color:rgba(0,255,65,0.6)}
+
+/* ── 🔊 MUSIC TOGGLE ── */
+#music-btn{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.3rem .85rem;border-radius:50px;
+  background:var(--surface);border:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  letter-spacing:.08em;color:var(--muted);
+  cursor:pointer;transition:all .3s;flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+#music-btn:hover{border-color:var(--border-h);color:var(--accent);box-shadow:var(--glow)}
+#music-btn.playing{border-color:rgba(0,240,100,0.4);color:#00f064;background:rgba(0,240,100,0.06)}
+#music-btn.playing:hover{box-shadow:0 0 20px rgba(0,240,100,0.25)}
+.music-icon{font-size:.8rem;transition:transform .3s}
+#music-btn.playing .music-icon{animation:musicBounce .5s ease-in-out infinite alternate}
+@keyframes musicBounce{from{transform:scale(1)}to{transform:scale(1.3)}}
+.music-bars{display:flex;align-items:flex-end;gap:2px;height:12px;opacity:0;transition:opacity .3s}
+#music-btn.playing .music-bars{opacity:1}
+.music-bar{width:3px;background:#00f064;border-radius:2px;animation:barAnim ease-in-out infinite alternate}
+.music-bar:nth-child(1){height:4px;animation-duration:.4s}
+.music-bar:nth-child(2){height:8px;animation-duration:.6s;animation-delay:.1s}
+.music-bar:nth-child(3){height:12px;animation-duration:.5s;animation-delay:.2s}
+.music-bar:nth-child(4){height:6px;animation-duration:.7s;animation-delay:.05s}
+@keyframes barAnim{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+
+/* ── 📊 GITHUB HEATMAP ── */
+#github-heat{background:var(--bg2);transition:background .4s}
+.heat-widget{max-width:860px}
+.heat-meta-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+.heat-profile{display:flex;align-items:center;gap:1.2rem}
+.heat-avatar{width:56px;height:56px;border-radius:50%;border:2px solid rgba(14,165,255,0.3);background:rgba(14,165,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;overflow:hidden;flex-shrink:0}
+.heat-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.heat-uname{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--white)}
+.heat-handle{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--accent);letter-spacing:.05em}
+.heat-stats-row{display:flex;gap:1.2rem;flex-wrap:wrap}
+.heat-stat{text-align:center}
+.heat-stat-val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#0ea5ff,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1}
+.heat-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem}
+.heat-grid-wrap{overflow-x:auto;padding-bottom:.5rem}
+.heat-grid-wrap::-webkit-scrollbar{height:3px}
+.heat-grid-wrap::-webkit-scrollbar-thumb{background:rgba(14,165,255,0.3);border-radius:10px}
+.heat-month-labels{display:flex;gap:0;margin-bottom:.4rem;padding-left:28px}
+.heat-month-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted2);letter-spacing:.05em;flex:1;text-align:center}
+.heat-body{display:flex;gap:3px;align-items:flex-start}
+.heat-day-labels{display:flex;flex-direction:column;gap:3px;margin-right:4px;padding-top:2px}
+.heat-day-lbl{font-family:'JetBrains Mono',monospace;font-size:.48rem;color:var(--muted2);height:11px;line-height:11px}
+.heat-weeks{display:flex;gap:3px}
+.heat-col{display:flex;flex-direction:column;gap:3px}
+.heat-cell{
+  width:11px;height:11px;border-radius:2px;
+  background:rgba(14,165,255,0.06);
+  transition:all .15s;cursor:default;
+  position:relative;
+}
+.heat-cell:hover{transform:scale(1.6);z-index:10;border-radius:3px}
+.heat-cell[data-level="1"]{background:rgba(14,165,255,0.2)}
+.heat-cell[data-level="2"]{background:rgba(14,165,255,0.4)}
+.heat-cell[data-level="3"]{background:rgba(14,165,255,0.65)}
+.heat-cell[data-level="4"]{background:#0ea5ff;box-shadow:0 0 6px rgba(14,165,255,0.6)}
+.heat-legend{display:flex;align-items:center;gap:.5rem;margin-top:1rem;justify-content:flex-end}
+.heat-legend-lbl{font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--muted2)}
+.heat-legend-cells{display:flex;gap:3px}
+.heat-legend-cell{width:11px;height:11px;border-radius:2px}
+.heat-tooltip{
+  position:fixed;
+  background:rgba(4,8,15,0.95);
+  border:1px solid rgba(14,165,255,0.25);
+  border-radius:8px;padding:.4rem .75rem;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  color:var(--white);pointer-events:none;
+  z-index:999;opacity:0;transition:opacity .15s;
+  white-space:nowrap;backdrop-filter:blur(12px);
+}
+[data-theme="light"] .heat-tooltip{background:rgba(240,245,255,0.98);color:#0a0f1e}
+.heat-loading{display:flex;align-items:center;gap:.8rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);padding:2rem 0}
+.heat-spin{width:16px;height:16px;border:2px solid rgba(14,165,255,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.heat-repos{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:1.5rem}
+.heat-repo{padding:.9rem 1.1rem;border-radius:12px;background:var(--surface);border:1px solid var(--border);text-decoration:none;transition:all .3s;display:block}
+.heat-repo:hover{border-color:var(--border-h);transform:translateY(-3px);box-shadow:var(--glow)}
+[data-theme="light"] .heat-repo{background:rgba(255,255,255,0.6)}
+.heat-repo-name{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--accent);margin-bottom:.25rem}
+.heat-repo-meta{display:flex;gap:.7rem;align-items:center}
+.heat-repo-lang{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--accent3);display:flex;align-items:center;gap:.3rem}
+.heat-repo-lang::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent3);display:inline-block}
+.heat-repo-stars{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted2)}
+@media(max-width:700px){.heat-repos{grid-template-columns:1fr 1fr}}
+
+/* ── 🧩 DUAL RADAR (current vs target) ── */
+.radar-panel{padding:2rem;border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border);position:sticky;top:calc(var(--nav-h)+1.5rem)}
+.radar-panel-title{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:.8rem}
+.radar-toggle-row{display:flex;gap:.5rem;justify-content:center;margin-bottom:1.2rem}
+.radar-toggle-btn{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .75rem;border-radius:50px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;transition:all .3s}
+.radar-toggle-btn.active{border-color:var(--border-h);color:var(--accent);background:rgba(14,165,255,0.08)}
+.radar-legend-row{display:flex;justify-content:center;gap:1rem;margin-top:.8rem}
+.radar-leg-item{display:flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--muted)}
+.radar-leg-dot{width:8px;height:8px;border-radius:50%}
+
+/* ── All original styles below ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:500;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1.5rem,4vw,4rem);background:rgba(4,8,15,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:background .4s}
 [data-theme="light"] nav{background:rgba(240,245,255,0.85)}
 .logo{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.4rem;letter-spacing:.04em}
@@ -164,62 +313,21 @@ section:first-of-type{padding-top:0}
 .bar-track{height:2px;background:rgba(255,255,255,0.07);border-radius:10px;overflow:hidden}
 .bar-fill{height:100%;border-radius:10px;transform:scaleX(0);transform-origin:left;transition:transform 1.8s cubic-bezier(.25,.46,.45,.94);background:linear-gradient(90deg,#0ea5ff,#00d4ff);box-shadow:0 0 8px rgba(14,165,255,0.5)}
 .bar-fill.on{transform:scaleX(1)}
-.radar-panel{padding:2rem;border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border);position:sticky;top:calc(var(--nav-h)+1.5rem)}
-.radar-panel-title{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:1.5rem}
 #projects{background:var(--bg2)}
-
-/* ══ FLIP CARDS - FIXED ══ */
 .proj-grid-6{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
 .flip-card{height:420px;perspective:1400px;cursor:pointer;user-select:none}
-.flip-inner{
-  width:100%;height:100%;
-  transform-style:preserve-3d !important;
-  transition:transform .75s cubic-bezier(.25,.46,.45,.94);
-  position:relative;
-}
-/* Hover flip - desktop only */
-@media(min-width:769px){
-  .flip-card:not(.flipped):hover .flip-inner{transform:rotateY(180deg)}
-}
-/* Click flip - all devices */
+.flip-inner{width:100%;height:100%;transform-style:preserve-3d !important;transition:transform .75s cubic-bezier(.25,.46,.45,.94);position:relative;}
+@media(min-width:769px){.flip-card:not(.flipped):hover .flip-inner{transform:rotateY(180deg)}}
 .flip-card.flipped .flip-inner{transform:rotateY(180deg) !important}
-.flip-front,.flip-back{
-  position:absolute;inset:0;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  border-radius:var(--radius-lg);
-  padding:1.8rem;
-  background:var(--surface);
-  border:1px solid var(--border);
-  backdrop-filter:blur(12px);
-  overflow:hidden;
-  transition:border-color .4s,background .4s;
-}
-.flip-back{
-  transform:rotateY(180deg);
-  background:rgba(3,6,13,0.98);
-  border-color:rgba(14,165,255,0.22);
-  display:flex !important;
-  flex-direction:column;
-  justify-content:space-between;
-}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius-lg);padding:1.8rem;background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(12px);overflow:hidden;transition:border-color .4s,background .4s;}
+.flip-back{transform:rotateY(180deg);background:rgba(3,6,13,0.98);border-color:rgba(14,165,255,0.22);display:flex !important;flex-direction:column;justify-content:space-between;}
 [data-theme="light"] .flip-back{background:rgba(232,240,255,0.98)}
 .flip-front:hover{border-color:rgba(14,165,255,0.35)}
 .proj-num-badge{font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:700;color:rgba(14,165,255,0.09);line-height:1;position:absolute;top:1.2rem;right:1.4rem;pointer-events:none;user-select:none}
 .proj-accent-strip{position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-.strip-ai{background:linear-gradient(90deg,#0ea5ff,#00d4ff)}
-.strip-recon{background:linear-gradient(90deg,#7c3aed,#a855f7)}
-.strip-ids{background:linear-gradient(90deg,#059669,#10b981)}
-.strip-osint{background:linear-gradient(90deg,#d97706,#f59e0b)}
-.strip-waf{background:linear-gradient(90deg,#dc2626,#ef4444)}
-.strip-security{background:linear-gradient(90deg,#0284c7,#38bdf8)}
+.strip-ai{background:linear-gradient(90deg,#0ea5ff,#00d4ff)}.strip-recon{background:linear-gradient(90deg,#7c3aed,#a855f7)}.strip-ids{background:linear-gradient(90deg,#059669,#10b981)}.strip-osint{background:linear-gradient(90deg,#d97706,#f59e0b)}.strip-waf{background:linear-gradient(90deg,#dc2626,#ef4444)}.strip-security{background:linear-gradient(90deg,#0284c7,#38bdf8)}
 .proj-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .7rem;border-radius:6px;background:rgba(14,165,255,0.1);border:1px solid rgba(14,165,255,0.22);color:var(--accent);display:inline-block;margin-bottom:.9rem}
-.proj-badge.b-ai{background:rgba(14,165,255,0.1);border-color:rgba(14,165,255,0.25);color:#0ea5ff}
-.proj-badge.b-recon{background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.25);color:#a855f7}
-.proj-badge.b-ids{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.25);color:#10b981}
-.proj-badge.b-osint{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.25);color:#f59e0b}
-.proj-badge.b-waf{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#ef4444}
-.proj-badge.b-security{background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.25);color:#38bdf8}
+.proj-badge.b-ai{background:rgba(14,165,255,0.1);border-color:rgba(14,165,255,0.25);color:#0ea5ff}.proj-badge.b-recon{background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.25);color:#a855f7}.proj-badge.b-ids{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.25);color:#10b981}.proj-badge.b-osint{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.25);color:#f59e0b}.proj-badge.b-waf{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#ef4444}.proj-badge.b-security{background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.25);color:#38bdf8}
 .proj-title-f{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:.65rem;line-height:1.25}
 .proj-desc-f{font-size:.8rem;line-height:1.8;color:var(--muted);margin-bottom:1.1rem}
 .tech-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem}
@@ -277,7 +385,7 @@ section:first-of-type{padding-top:0}
 #terminal-play{background:var(--bg)}
 .it-container{max-width:740px}
 .it-box{border:1px solid rgba(14,165,255,0.2);border-radius:14px;overflow:hidden;background:rgba(3,6,13,0.96);box-shadow:0 0 80px rgba(14,165,255,0.08),0 20px 60px rgba(0,0,0,0.6)}
-.it-box:focus-within{box-shadow:0 0 100px rgba(14,165,255,0.15),0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(14,165,255,0.25)}
+.it-box:focus-within{box-shadow:0 0 100px rgba(14,165,255,0.15),0 0 0 1px rgba(14,165,255,0.25)}
 .it-bar{background:rgba(14,165,255,0.05);border-bottom:1px solid rgba(14,165,255,0.12);padding:.65rem 1.2rem;display:flex;align-items:center;gap:.45rem}
 .it-bar-dot{width:10px;height:10px;border-radius:50%}
 .it-bar-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(14,165,255,0.45);margin:0 auto;letter-spacing:.12em}
@@ -347,14 +455,6 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
 .toast-msg{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted)}
 .toast-bar{position:absolute;bottom:0;left:0;height:2px;border-radius:0 0 14px 14px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform-origin:left;animation:toastTimer 4s linear forwards}
 @keyframes toastTimer{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-#konami-screen{position:fixed;inset:0;z-index:20000;background:rgba(3,6,13,0.98);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s;font-family:'JetBrains Mono',monospace}
-#konami-screen.show{opacity:1;visibility:visible}
-.konami-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,6vw,4.5rem);font-weight:900;background:linear-gradient(90deg,#0ea5ff,#00d4ff,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:konPulse 1s ease-in-out infinite alternate;text-align:center}
-@keyframes konPulse{from{filter:drop-shadow(0 0 10px rgba(14,165,255,0.4))}to{filter:drop-shadow(0 0 50px rgba(14,165,255,0.9))}}
-.konami-sub{font-size:.75rem;color:rgba(14,165,255,0.5);letter-spacing:.2em;text-align:center}
-.konami-ascii{font-size:.55rem;line-height:1.4;color:rgba(14,165,255,0.3);text-align:center}
-.konami-close{margin-top:.5rem;font-size:.62rem;letter-spacing:.2em;color:rgba(14,165,255,0.3);cursor:pointer;transition:color .3s;text-transform:uppercase;padding:.5rem 1rem;border:1px solid rgba(14,165,255,0.2);border-radius:50px}
-.konami-close:hover{color:var(--accent);border-color:rgba(14,165,255,0.5)}
 .trail-dot{position:fixed;pointer-events:none;border-radius:50%;z-index:9997;transform:translate(-50%,-50%);will-change:transform,opacity}
 .reveal{opacity:0;transform:translateY(28px);transition:all .85s cubic-bezier(.25,.46,.45,.94)}
 .reveal.on{opacity:1;transform:translateY(0)}
@@ -372,7 +472,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
 .hero-float-badge{position:absolute;font-family:'JetBrains Mono',monospace;font-size:.58rem;padding:.25rem .75rem;border-radius:50px;border:1px solid rgba(14,165,255,0.25);background:rgba(14,165,255,0.07);color:var(--accent);letter-spacing:.06em;pointer-events:none;animation:floatBadge ease-in-out infinite;backdrop-filter:blur(8px);z-index:1;white-space:nowrap}
 @keyframes floatBadge{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.02)}}
 @media(max-width:1200px){.proj-grid-6{grid-template-columns:repeat(2,1fr)}.skills-layout{grid-template-columns:1fr}.radar-panel{position:static}}
-@media(max-width:900px){nav{padding:0 1.5rem}.hamburger{display:flex}.nav-links{display:none}.status-badge{display:none}section{padding:4rem 1.5rem}.about-layout{grid-template-columns:1fr;gap:3rem}.skills-grid{grid-template-columns:1fr}.proj-grid-6{grid-template-columns:1fr}.certs-grid{grid-template-columns:1fr}.contact-layout{grid-template-columns:1fr;gap:3rem}.ach-grid{grid-template-columns:1fr}.tools-grid{grid-template-columns:repeat(3,1fr)}footer{flex-direction:column;gap:.8rem;text-align:center}.ft-links{display:none}#clock-widget .clock-loc{display:none}}
+@media(max-width:900px){nav{padding:0 1.5rem}.hamburger{display:flex}.nav-links{display:none}.status-badge{display:none}section{padding:4rem 1.5rem}.about-layout{grid-template-columns:1fr;gap:3rem}.skills-grid{grid-template-columns:1fr}.proj-grid-6{grid-template-columns:1fr}.certs-grid{grid-template-columns:1fr}.contact-layout{grid-template-columns:1fr;gap:3rem}.ach-grid{grid-template-columns:1fr}.tools-grid{grid-template-columns:repeat(3,1fr)}footer{flex-direction:column;gap:.8rem;text-align:center}.ft-links{display:none}#clock-widget .clock-loc{display:none}#music-btn span:not(.music-icon):not(.music-bars){display:none}}
 @media(max-width:600px){.hero-name{font-size:clamp(3.5rem,14vw,6rem)}.tools-grid{grid-template-columns:repeat(2,1fr)}.proj-filters{display:none}.flip-card{height:380px}}
 </style>
 </head>
@@ -387,16 +487,55 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
 <div id="cur2"></div>
 <div id="loader"><div class="loader-icon">⚡</div><div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div><div class="loader-label" id="loader-pct">initializing...</div></div>
 <div id="term-login"><div class="tl-box"><div class="tl-topbar"><div class="tl-bar-dot" style="background:#ff5f57"></div><div class="tl-bar-dot" style="background:#febc2e"></div><div class="tl-bar-dot" style="background:#28c840"></div><span class="tl-bar-title">arshad@kali-linux — ssh session</span></div><div class="tl-body" id="tl-body"><div class="tl-cursor-line"><span class="tl-blink">▋</span></div></div></div><div class="tl-skip" id="tl-skip">[ press any key or click to skip ]</div></div>
-<div id="konami-screen"><div class="konami-title">⚡ ACCESS GRANTED ⚡</div><div class="konami-sub">// You found the cheat code, hacker</div><pre class="konami-ascii">  ██████╗  ██████╗  ██████╗ ████████╗
-  ██╔══██╗██╔═══██╗██╔═══██╗╚══██╔══╝
-  ██████╔╝██║   ██║██║   ██║   ██║
-  ██╔══██╗██║   ██║██║   ██║   ██║
-  ██║  ██║╚██████╔╝╚██████╔╝   ██║
-  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚═╝</pre><div class="konami-sub" style="font-size:.62rem;opacity:.4">↑↑↓↓←→←→BA — nice one 🎮</div><div class="konami-close" id="konami-close">[ ESC ] dismiss</div></div>
+
+<!-- 🎮 MATRIX RAIN SCREEN (upgraded Konami) -->
+<div id="matrix-screen">
+  <canvas id="matrix-canvas"></canvas>
+  <div class="matrix-overlay-content">
+    <div class="matrix-title">ACCESS GRANTED</div>
+    <div class="matrix-sub">// ↑↑↓↓←→←→BA — nice one, hacker 🎮</div>
+    <div class="matrix-code-lines">
+      <div>root@arshad:~# cat /etc/shadow | grep arshad_tk</div>
+      <div>arshad_tk:$6$R4nd0m$XxXx... [DECRYPTED ✓]</div>
+      <div>clearance_level=OMEGA · tools=6 · status=ACTIVE</div>
+    </div>
+    <div class="matrix-close" id="matrix-close">[ ESC ] or click to exit the matrix</div>
+  </div>
+</div>
+
 <div id="toast"><div class="toast-icon">✉️</div><div><div class="toast-title">Message Sent!</div><div class="toast-msg">I'll reply within 24 hours 🚀</div></div><div class="toast-bar"></div></div>
+<div id="heat-tooltip" class="heat-tooltip"></div>
 <button id="scrolltop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<div class="mob-menu" id="mob-menu"><button class="mob-close" id="mob-close">✕</button><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#achievements">Achievements</a><a href="#certs">Certs</a><a href="#education">Education</a><a href="#terminal-play">Terminal</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
-<nav><a href="#hero" class="logo"><span class="logo-bracket">[</span><span class="logo-text">arshad<span style="opacity:.5">·</span>tk</span><span class="logo-bracket">]</span></a><ul class="nav-links"><li><a href="#about" data-spy="about">About</a></li><li><a href="#skills" data-spy="skills">Skills</a></li><li><a href="#projects" data-spy="projects">Projects</a></li><li><a href="#achievements" data-spy="achievements">Achievements</a></li><li><a href="#certs" data-spy="certs">Certs</a></li><li><a href="#education" data-spy="education">Education</a></li><li><a href="#terminal-play" data-spy="terminal-play">Terminal</a></li><li><a href="#tools" data-spy="tools">Tools</a></li><li><a href="#contact" data-spy="contact">Contact</a></li></ul><div class="nav-right"><div class="status-badge"><span class="status-dot"></span>Available for Hire</div><div id="clock-widget"><span class="clock-loc">IST</span><span class="clock-time" id="clock-time">00:00:00</span></div><button id="theme-toggle" aria-label="Toggle theme"></button><button class="hamburger" id="hamburger"><span></span><span></span><span></span></button></div></nav>
+<div class="mob-menu" id="mob-menu"><button class="mob-close" id="mob-close">✕</button><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#achievements">Achievements</a><a href="#certs">Certs</a><a href="#education">Education</a><a href="#terminal-play">Terminal</a><a href="#github-heat">GitHub</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
+
+<nav>
+  <a href="#hero" class="logo"><span class="logo-bracket">[</span><span class="logo-text">arshad<span style="opacity:.5">·</span>tk</span><span class="logo-bracket">]</span></a>
+  <ul class="nav-links">
+    <li><a href="#about" data-spy="about">About</a></li>
+    <li><a href="#skills" data-spy="skills">Skills</a></li>
+    <li><a href="#projects" data-spy="projects">Projects</a></li>
+    <li><a href="#achievements" data-spy="achievements">Achievements</a></li>
+    <li><a href="#certs" data-spy="certs">Certs</a></li>
+    <li><a href="#education" data-spy="education">Education</a></li>
+    <li><a href="#terminal-play" data-spy="terminal-play">Terminal</a></li>
+    <li><a href="#github-heat" data-spy="github-heat">GitHub</a></li>
+    <li><a href="#tools" data-spy="tools">Tools</a></li>
+    <li><a href="#contact" data-spy="contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="status-badge"><span class="status-dot"></span>Available for Hire</div>
+    <div id="clock-widget"><span class="clock-loc">IST</span><span class="clock-time" id="clock-time">00:00:00</span></div>
+    <!-- 🔊 MUSIC TOGGLE -->
+    <button id="music-btn" aria-label="Toggle music">
+      <span class="music-icon">🎵</span>
+      <span>lo-fi</span>
+      <div class="music-bars"><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div></div>
+    </button>
+    <button id="theme-toggle" aria-label="Toggle theme"></button>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
 <section id="hero">
   <canvas id="hero-grid"></canvas>
   <div class="hero-inner">
@@ -409,13 +548,16 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
   </div>
   <div id="hero-badges" style="position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden"></div>
 </section>
+
 <div id="marquee-section"><div class="marquee-track" id="marquee-track"></div></div>
+
 <section id="about">
   <div class="about-layout">
     <div class="reveal-l"><div class="card profile-card"><div class="profile-img-bg">🛡️</div><div class="profile-name">Arshad TK</div><div class="profile-title">Cybersec Professional</div><div class="profile-pills"><span class="profile-pill">Pentesting</span><span class="profile-pill">Web AppSec</span><span class="profile-pill">OSINT</span><span class="profile-pill">Network</span><span class="profile-pill">Python</span><span class="profile-pill">Linux</span></div></div></div>
     <div class="about-content reveal-r"><div class="s-label">01 · About me</div><h2 class="s-title">Securing the<br><span class="grad scramble-target" data-original="digital world">digital world</span></h2><p class="about-p">Motivated entry-level Cybersecurity professional with hands-on experience in penetration testing fundamentals, web application security, and network traffic analysis. Currently pursuing an Advanced Diploma in Information Security (ADIS) at Offenso Academy, Calicut.</p><p class="about-p">Proficient in industry-standard tools including Burp Suite, Nmap, Metasploit, and Wireshark. Passionate about identifying vulnerabilities, analyzing threats, and contributing to a stronger security posture.</p><div class="about-tags"><span class="about-tag">Penetration Testing</span><span class="about-tag">Web App Security</span><span class="about-tag">SQL Injection</span><span class="about-tag">Enumeration</span><span class="about-tag">Privilege Escalation</span><span class="about-tag">Network Security</span><span class="about-tag">Vulnerability Assessment</span><span class="about-tag">OSINT</span><span class="about-tag">XSS</span><span class="about-tag">WAF Bypass</span><span class="about-tag">CTF Challenges</span></div></div>
   </div>
 </section>
+
 <section id="skills">
   <div class="reveal"><div class="s-label">02 · Arsenal</div><h2 class="s-title">Technical <span class="grad scramble-target" data-original="Skills">Skills</span></h2></div>
   <div class="skills-layout">
@@ -427,9 +569,24 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
       <div class="card sk-card reveal"><div class="sk-header"><div class="sk-icon">🔍</div><span class="sk-pct-badge">85%</span></div><div class="sk-title">Network Recon</div><div class="sk-desc">Port scanning, service enum, attack surface mapping, and packet analysis.</div><div class="bar-track"><div class="bar-fill" data-w=".85"></div></div></div>
       <div class="card sk-card reveal"><div class="sk-header"><div class="sk-icon">🧪</div><span class="sk-pct-badge">72%</span></div><div class="sk-title">Scripting &amp; Automation</div><div class="sk-desc">Python tooling, recon automation, ML pipelines, and custom security scripts.</div><div class="bar-track"><div class="bar-fill" data-w=".72"></div></div></div>
     </div>
-    <div class="radar-panel reveal-r"><div class="radar-panel-title">// skill_radar.exe</div><canvas id="radarCanvas" width="280" height="280"></canvas><div class="radar-legend" id="radarLegend"></div></div>
+    <!-- 🧩 DUAL RADAR PANEL -->
+    <div class="radar-panel reveal-r">
+      <div class="radar-panel-title">// skill_radar.exe</div>
+      <div class="radar-toggle-row">
+        <button class="radar-toggle-btn active" data-mode="current">Current</button>
+        <button class="radar-toggle-btn" data-mode="target">Target</button>
+        <button class="radar-toggle-btn" data-mode="both">Compare</button>
+      </div>
+      <canvas id="radarCanvas" width="280" height="280"></canvas>
+      <div class="radar-legend-row">
+        <div class="radar-leg-item"><div class="radar-leg-dot" style="background:#0ea5ff"></div>Current</div>
+        <div class="radar-leg-item" id="radar-target-leg" style="opacity:0;transition:opacity .3s"><div class="radar-leg-dot" style="background:rgba(255,45,107,0.7)"></div>Target</div>
+      </div>
+      <div class="radar-legend" id="radarLegend"></div>
+    </div>
   </div>
 </section>
+
 <section id="projects">
   <div class="reveal"><div class="s-label">03 · Operations</div><h2 class="s-title">Featured <span class="grad scramble-target" data-original="Projects">Projects</span></h2></div>
   <div class="proj-count-wrap reveal"><span class="proj-count-badge">6 repositories</span><span style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted2)">// click cards to flip &amp; see details</span></div>
@@ -443,6 +600,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
     <div class="flip-card reveal" data-category="recon"><div class="flip-inner"><div class="flip-front"><div class="proj-accent-strip strip-recon"></div><div class="proj-num-badge">06</div><span class="proj-badge b-recon">Recon · Framework</span><h3 class="proj-title-f">ReconX</h3><p class="proj-desc-f">Modular, multi-threaded reconnaissance framework for penetration testers and bug bounty hunters. Automates subdomain discovery, live host validation, and credential scanning with zero dependencies.</p><div class="tech-row"><span class="tech-pill">Python</span><span class="tech-pill">Multi-threading</span><span class="tech-pill">crt.sh API</span><span class="tech-pill">OSINT</span><span class="tech-pill">Bug Bounty</span></div><span class="flip-hint">click or hover to flip ↻</span></div><div class="flip-back"><div><div class="flip-back-label">// project_details</div><div class="flip-back-title">ReconX — Recon Framework</div><div class="flip-back-detail">Zero external binary dependencies — pure Python. Leverages crt.sh Certificate Transparency logs for passive subdomain discovery. Multi-threaded live host validation with secret/credential scanning module. Built for bug bounty hunters.</div><div class="flip-back-stats"><span class="flip-stat">🔍 CT Logs</span><span class="flip-stat">⚡ Multi-thread</span><span class="flip-stat">0 Deps</span></div></div><a href="https://github.com/arshad9061/ReconX" target="_blank" class="flip-back-link" onclick="event.stopPropagation()">→ github.com/arshad9061/ReconX</a></div></div></div>
   </div>
 </section>
+
 <section id="achievements">
   <div class="reveal"><div class="s-label">04 · Impact</div><h2 class="s-title">Key <span class="grad scramble-target" data-original="Achievements">Achievements</span></h2></div>
   <div class="ach-grid">
@@ -451,6 +609,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
     <div class="card ach-card reveal"><div class="ach-badge">🛡️</div><div class="ach-num">ADIS</div><div class="ach-title">Enrolled at Offenso</div><div class="ach-desc">Advanced Diploma in Information Security at Offenso Academy, Calicut — one of India's premier ethical hacking institutes.</div></div>
   </div>
 </section>
+
 <section id="certs">
   <div class="reveal"><div class="s-label">05 · Credentials</div><h2 class="s-title">Certs <span class="grad">&amp; Awards</span></h2></div>
   <div class="certs-grid">
@@ -458,6 +617,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
     <div class="card cert-card reveal"><div class="cert-ico-wrap">🛡️</div><div><div class="cert-name">Deloitte Cyber Job Simulation</div><div class="cert-issuer">Deloitte / Forage</div><div class="cert-yr">2026</div></div></div>
   </div>
 </section>
+
 <section id="education">
   <div class="reveal"><div class="s-label">06 · Background</div><h2 class="s-title">Education <span class="grad">&amp; Learning</span></h2></div>
   <div class="edu-timeline">
@@ -465,12 +625,22 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
     <div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-year">2021 — 2023</div><div class="tl-degree">Higher Secondary Education — Commerce</div><div class="tl-school">📚 Higher Secondary School, Kalpakanchery, Kerala</div><div class="tl-desc">Completed higher secondary education with commerce stream, building foundational analytical and problem-solving skills.</div></div></div>
   </div>
 </section>
+
 <section id="terminal-play">
   <div class="reveal"><div class="s-label">07 · Playground</div><h2 class="s-title">Hack the <span class="grad scramble-target" data-original="Terminal">Terminal</span></h2></div>
   <div class="it-container reveal"><div class="it-box"><div class="it-bar"><div class="it-bar-dot" style="background:#ff5f57"></div><div class="it-bar-dot" style="background:#febc2e"></div><div class="it-bar-dot" style="background:#28c840"></div><span class="it-bar-title">arshad@portfolio:~$ — interactive shell v4.1</span></div><div class="it-body" id="it-body"><div class="it-line"><span class="it-output g">[ ✓ ] Portfolio shell v4.1 — type <span style="color:#0ea5ff">help</span> for commands</span></div><div class="it-line"><span class="it-output" style="color:rgba(14,165,255,0.3)">────────────────────────────────────────</span></div></div><div class="it-input-row"><span>arshad@portfolio:~$</span><input type="text" id="it-input" placeholder="type a command..." autocomplete="off" spellcheck="false"></div></div><div class="it-hint">try these commands</div><div class="it-cmds"><span class="it-cmd-pill" data-cmd="help">help</span><span class="it-cmd-pill" data-cmd="whoami">whoami</span><span class="it-cmd-pill" data-cmd="skills">skills</span><span class="it-cmd-pill" data-cmd="projects">projects</span><span class="it-cmd-pill" data-cmd="contact">contact</span><span class="it-cmd-pill" data-cmd="tools">tools</span><span class="it-cmd-pill" data-cmd="nmap -sv localhost">nmap scan</span><span class="it-cmd-pill" data-cmd="cat secret.txt">secret.txt</span><span class="it-cmd-pill" data-cmd="achievements">achievements</span><span class="it-cmd-pill" data-cmd="clear">clear</span></div></div>
 </section>
+
+<!-- 📊 GITHUB HEATMAP SECTION -->
+<section id="github-heat">
+  <div class="reveal"><div class="s-label">08 · Open Source</div><h2 class="s-title">GitHub <span class="grad">Activity</span></h2></div>
+  <div class="heat-widget reveal" id="heat-widget">
+    <div class="heat-loading"><div class="heat-spin"></div>Fetching GitHub data...</div>
+  </div>
+</section>
+
 <section id="tools">
-  <div class="reveal"><div class="s-label">08 · Toolkit</div><h2 class="s-title">Tools I <span class="grad">Use</span></h2></div>
+  <div class="reveal"><div class="s-label">09 · Toolkit</div><h2 class="s-title">Tools I <span class="grad">Use</span></h2></div>
   <div class="tools-grid">
     <div class="card tool-card reveal"><span class="tool-icon">🗺️</span><span class="tool-name">Nmap</span></div>
     <div class="card tool-card reveal"><span class="tool-icon">🕷️</span><span class="tool-name">Burp Suite</span></div>
@@ -486,9 +656,10 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
     <div class="card tool-card reveal"><span class="tool-icon">🐍</span><span class="tool-name">Python</span></div>
   </div>
 </section>
+
 <section id="contact">
   <div class="contact-layout">
-    <div><div class="reveal"><div class="s-label">09 · Connect</div><h2 class="s-title">Let's <span class="grad">Talk</span></h2></div><p class="contact-desc reveal">Open to cybersecurity internships, penetration testing engagements, and collaborations. Based in Malappuram, Kerala. I respond within 24 hours.</p><div class="c-links"><a href="mailto:arshadtk767@gmail.com" class="card c-link reveal"><span class="c-ico">📧</span><span class="c-txt">arshadtk767@gmail.com</span><span class="c-arr">→</span></a><a href="https://www.linkedin.com/in/arshad-tk-2b1905369/" target="_blank" class="card c-link reveal"><span class="c-ico">💼</span><span class="c-txt">linkedin.com/in/arshad-tk</span><span class="c-arr">→</span></a><a href="https://github.com/arshad9061" target="_blank" class="card c-link reveal"><span class="c-ico">🐙</span><span class="c-txt">github.com/arshad9061</span><span class="c-arr">→</span></a><a href="https://www.instagram.com/ars_ha._dddd" target="_blank" class="card c-link reveal"><span class="c-ico">📸</span><span class="c-txt">instagram.com/ars_ha._dddd</span><span class="c-arr">→</span></a></div></div>
+    <div><div class="reveal"><div class="s-label">10 · Connect</div><h2 class="s-title">Let's <span class="grad">Talk</span></h2></div><p class="contact-desc reveal">Open to cybersecurity internships, penetration testing engagements, and collaborations. Based in Malappuram, Kerala. I respond within 24 hours.</p><div class="c-links"><a href="mailto:arshadtk767@gmail.com" class="card c-link reveal"><span class="c-ico">📧</span><span class="c-txt">arshadtk767@gmail.com</span><span class="c-arr">→</span></a><a href="https://www.linkedin.com/in/arshad-tk-2b1905369/" target="_blank" class="card c-link reveal"><span class="c-ico">💼</span><span class="c-txt">linkedin.com/in/arshad-tk</span><span class="c-arr">→</span></a><a href="https://github.com/arshad9061" target="_blank" class="card c-link reveal"><span class="c-ico">🐙</span><span class="c-txt">github.com/arshad9061</span><span class="c-arr">→</span></a><a href="https://www.instagram.com/ars_ha._dddd" target="_blank" class="card c-link reveal"><span class="c-ico">📸</span><span class="c-txt">instagram.com/ars_ha._dddd</span><span class="c-arr">→</span></a></div></div>
     <form class="form-wrap reveal" action="https://formspree.io/f/mjgpavan" method="POST" id="contact-form"><div class="fg"><label class="fl">// Name</label><input type="text" name="name" class="fi" placeholder="Your name" required></div><div class="fg"><label class="fl">// Email</label><input type="email" name="email" class="fi" placeholder="your@email.com" required></div><div class="fg"><label class="fl">// Subject</label><input type="text" name="subject" class="fi" placeholder="Collaboration / Internship / CTF" required></div><div class="fg"><label class="fl">// Message</label><textarea name="message" class="fta" placeholder="What's on your mind?" required></textarea></div><button type="submit" class="btn-primary" style="border:none;font-weight:700" id="submit-btn">Send Message →</button><div id="form-msg" style="display:none;font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.7rem 1rem;border-radius:8px;margin-top:.4rem"></div></form>
   </div>
 </section>
@@ -496,89 +667,233 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:1.
 
 <script>
 'use strict';
+
+/* ── SCROLL PROGRESS ── */
 const progressEl=document.getElementById('scroll-progress');
-window.addEventListener('scroll',()=>{const pct=scrollY/(document.documentElement.scrollHeight-innerHeight)*100;progressEl.style.width=pct+'%';},{passive:true});
+window.addEventListener('scroll',()=>{progressEl.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%';},{passive:true});
+
+/* ── CURSOR ── */
 const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
 let mx=0,my=0,tx2=0,ty2=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';},{passive:true});
 (function loop(){tx2+=(mx-tx2)*.14;ty2+=(my-ty2)*.14;cur2.style.left=tx2+'px';cur2.style.top=ty2+'px';requestAnimationFrame(loop);})();
+
+/* ── HERO GRID ── */
 const hgc=document.getElementById('hero-grid'),hgx=hgc.getContext('2d');
 function resizeHG(){hgc.width=hgc.offsetWidth;hgc.height=hgc.offsetHeight;}resizeHG();
 function drawHG(){hgx.clearRect(0,0,hgc.width,hgc.height);hgx.strokeStyle='rgba(14,165,255,1)';hgx.lineWidth=.5;const gap=55;for(let x=0;x<hgc.width;x+=gap){hgx.beginPath();hgx.moveTo(x,0);hgx.lineTo(x,hgc.height);hgx.stroke();}for(let y=0;y<hgc.height;y+=gap){hgx.beginPath();hgx.moveTo(0,y);hgx.lineTo(hgc.width,y);hgx.stroke();}}
 drawHG();window.addEventListener('resize',()=>{resizeHG();drawHG();});
-const html=document.documentElement;const themeBtn=document.getElementById('theme-toggle');let isDark=true;
+
+/* ── THEME ── */
+const html=document.documentElement;
+const themeBtn=document.getElementById('theme-toggle');
+let isDark=true;
 themeBtn.addEventListener('click',()=>{isDark=!isDark;html.setAttribute('data-theme',isDark?'dark':'light');localStorage.setItem('theme',isDark?'dark':'light');drawRadar();});
-const savedTheme=localStorage.getItem('theme');if(savedTheme==='light'){isDark=false;html.setAttribute('data-theme','light');}
+if(localStorage.getItem('theme')==='light'){isDark=false;html.setAttribute('data-theme','light');}
+
+/* ── CLOCK ── */
 function updateClock(){const ist=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));const h=String(ist.getHours()).padStart(2,'0');const m=String(ist.getMinutes()).padStart(2,'0');const s=String(ist.getSeconds()).padStart(2,'0');document.getElementById('clock-time').textContent=h+':'+m+':'+s;}
 updateClock();setInterval(updateClock,1000);
+
+/* ── 🔊 AMBIENT CYBERPUNK MUSIC (Web Audio API generative) ── */
+(()=>{
+  const btn=document.getElementById('music-btn');
+  if(!btn)return;
+  let ctx=null,playing=false,nodes=[];
+
+  function buildMusic(actx){
+    // Ambient lo-fi hacker beat: drone + subtle rhythm + high-hat
+    const master=actx.createGain();
+    master.gain.value=0.18;
+    master.connect(actx.destination);
+
+    // Sub drone
+    function drone(freq,detune,vol){
+      const osc=actx.createOscillator();
+      const g=actx.createGain();
+      osc.type='sine';osc.frequency.value=freq;osc.detune.value=detune;
+      g.gain.value=vol;
+      osc.connect(g);g.connect(master);osc.start();
+      return {osc,g};
+    }
+    // Pad chords
+    function pad(freq,vol=0.04){
+      const osc=actx.createOscillator();
+      const g=actx.createGain();
+      osc.type='triangle';osc.frequency.value=freq;
+      g.gain.value=vol;
+      osc.connect(g);g.connect(master);osc.start();
+      return {osc,g};
+    }
+    // Slow LFO vibrato
+    function lfo(target,rate,depth){
+      const o=actx.createOscillator();
+      const g=actx.createGain();
+      o.frequency.value=rate;g.gain.value=depth;
+      o.connect(g);g.connect(target);o.start();
+      return {osc:o,g};
+    }
+
+    const d1=drone(55,0,0.12);
+    const d2=drone(55,8,0.06);
+    const p1=pad(220,0.035);
+    const p2=pad(277.18,0.025);
+    const p3=pad(329.63,0.02);
+    const p4=pad(165,0.03);
+    lfo(d1.osc.frequency,0.08,2);
+    lfo(p1.g.gain,0.15,0.015);
+
+    // Subtle rhythmic pulse with delay
+    let beat=0;
+    const rhythm=setInterval(()=>{
+      const t=actx.currentTime;
+      beat++;
+      // Kick-like thump every 4 beats
+      if(beat%4===0){
+        const k=actx.createOscillator();
+        const kg=actx.createGain();
+        k.type='sine';k.frequency.setValueAtTime(120,t);k.frequency.exponentialRampToValueAtTime(40,t+0.12);
+        kg.gain.setValueAtTime(0.22,t);kg.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+        k.connect(kg);kg.connect(master);k.start(t);k.stop(t+0.18);
+      }
+      // Hi-hat every 2 beats
+      if(beat%2===0){
+        const buf=actx.createBuffer(1,actx.sampleRate*0.04,actx.sampleRate);
+        const data=buf.getChannelData(0);
+        for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*0.3;
+        const src=actx.createBufferSource();
+        const hg=actx.createGain();
+        const hp=actx.createBiquadFilter();
+        hp.type='highpass';hp.frequency.value=6000;
+        hg.gain.setValueAtTime(0.08,t);hg.gain.exponentialRampToValueAtTime(0.001,t+0.04);
+        src.buffer=buf;src.connect(hp);hp.connect(hg);hg.connect(master);src.start(t);
+      }
+    },480); // ~125bpm / 2
+
+    return {stop:()=>{
+      clearInterval(rhythm);
+      [d1,d2,p1,p2,p3,p4].forEach(n=>{try{n.osc.stop();}catch(e){}});
+    }};
+  }
+
+  btn.addEventListener('click',()=>{
+    if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();}
+    if(ctx.state==='suspended')ctx.resume();
+    if(!playing){
+      nodes=buildMusic(ctx);
+      playing=true;
+      btn.classList.add('playing');
+      btn.querySelector('span:not(.music-icon):not(.music-bars)').textContent='playing';
+    } else {
+      nodes.stop();
+      playing=false;
+      btn.classList.remove('playing');
+      btn.querySelector('span:not(.music-icon):not(.music-bars)').textContent='lo-fi';
+    }
+  });
+})();
+
+/* ── TYPING ── */
 const phrases=['python3 reconx.py --domain target.com --threads 50','python3 cyberguard-pro.py --scan --report','python3 socialmapper.py --target username --deep','python3 waf-bypass-lab.py --payload xss --encode b64','python3 netwatchdog.py --interface eth0 --rules all','python3 phishguard.py --scan urls.txt --output report',];
 let pi=0,ci=0,going=true;const tel=document.getElementById('typed');const prefix='arshad@kali:~$ ';
 setInterval(()=>{if(!going)return;const full=prefix+phrases[pi];tel.textContent=full.slice(0,ci++);if(ci>full.length){going=false;setTimeout(()=>{going=true;ci=0;pi=(pi+1)%phrases.length;},2600);}},58);
+
+/* ── MARQUEE ── */
 const marqueeItems=['🔴 Penetration Testing','🌐 OWASP Top 10','⚡ Python Security Tools','🛡️ WAF Bypass Research','🔍 Network Recon','💣 Metasploit Framework','🕷️ Burp Suite','🌍 OSINT & SocialMapping','🐍 Python Automation','🔑 Privilege Escalation','🐳 Docker Security','📡 Packet Analysis','🎯 Bug Bounty','🏆 CCEP Certified','🔬 CTF Challenges',];
-const track=document.getElementById('marquee-track');[...marqueeItems,...marqueeItems].forEach(txt=>{const div=document.createElement('div');div.className='marquee-item';div.innerHTML=`<span>${txt}</span><span class="marquee-sep">·</span>`;track.appendChild(div);});
-(()=>{const badges=['Nmap','Burp Suite','SQLi','XSS','OSINT','Metasploit','ReconX','WAF Bypass','Python','CTF','OWASP','SocialMapper'];const wrap=document.getElementById('hero-badges');badges.forEach((text,i)=>{const el=document.createElement('div');el.className='hero-float-badge';const side=i%2===0;const xPos=side?(75+Math.random()*20):(3+Math.random()*5);const yPos=10+(i/badges.length)*75;const dur=3.5+i*0.35;el.textContent=text;el.style.cssText=`left:${xPos}%;top:${yPos}%;animation-duration:${dur}s;animation-delay:-${i*0.35}s;`;wrap.appendChild(el);});})();
+const track=document.getElementById('marquee-track');
+[...marqueeItems,...marqueeItems].forEach(txt=>{const div=document.createElement('div');div.className='marquee-item';div.innerHTML=`<span>${txt}</span><span class="marquee-sep">·</span>`;track.appendChild(div);});
+
+/* ── FLOATING HERO BADGES ── */
+(()=>{const badges=['Nmap','Burp Suite','SQLi','XSS','OSINT','Metasploit','ReconX','WAF Bypass','Python','CTF','OWASP','SocialMapper'];const wrap=document.getElementById('hero-badges');badges.forEach((text,i)=>{const el=document.createElement('div');el.className='hero-float-badge';const side=i%2===0;const xPos=side?(75+Math.random()*20):(3+Math.random()*5);const yPos=10+(i/badges.length)*75;el.textContent=text;el.style.cssText=`left:${xPos}%;top:${yPos}%;animation-duration:${3.5+i*0.35}s;animation-delay:-${i*0.35}s;`;wrap.appendChild(el);});})();
+
+/* ── COUNTERS ── */
 document.querySelectorAll('.stat-n[data-target]').forEach(el=>{const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){let n=0,t=+el.dataset.target;const iv=setInterval(()=>{el.textContent=Math.min(++n,t);if(n>=t)clearInterval(iv);},80);obs.disconnect();}},{threshold:.5});obs.observe(el);});
+
+/* ── REVEAL ── */
 const revObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');e.target.querySelectorAll('.bar-fill[data-w]').forEach(b=>{b.style.transform=`scaleX(${b.dataset.w})`;});}});},{threshold:.1});
 document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>revObs.observe(el));
+
+/* ── SCRAMBLE ── */
 const SC='!<>-_\\/[]{}—=+*^?#@$%ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 function scramble(el,final,dur=1000){let f=0;const total=dur/40;const iv=setInterval(()=>{const prog=f/total;el.textContent=final.split('').map((c,i)=>{if(c===' ')return ' ';if(i<Math.floor(prog*final.length))return c;return SC[Math.floor(Math.random()*SC.length)];}).join('');if(++f>total){el.textContent=final;clearInterval(iv);}},40);}
 const scObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){scramble(e.target,e.target.getAttribute('data-original'));scObs.unobserve(e.target);}});},{threshold:.5});
 document.querySelectorAll('.scramble-target').forEach(el=>scObs.observe(el));
-const radarData=[{label:'Offensive',value:1.0},{label:'Web Pentest',value:0.9},{label:'OSINT',value:0.8},{label:'Linux',value:0.95},{label:'Network',value:0.85},{label:'Scripting',value:0.72},];
-function drawRadar(animPct=1){const canvas=document.getElementById('radarCanvas');if(!canvas)return;const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;const cx=W/2,cy=H/2,R=Math.min(W,H)*.37,N=radarData.length;const isLight=html.dataset.theme==='light';ctx.clearRect(0,0,W,H);for(let r=1;r<=5;r++){ctx.beginPath();for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2,rr=(R/5)*r;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}ctx.closePath();ctx.strokeStyle=isLight?'rgba(14,165,255,0.2)':'rgba(14,165,255,0.12)';ctx.lineWidth=1;ctx.stroke();if(r===5){ctx.fillStyle='rgba(14,165,255,0.03)';ctx.fill();}}for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle=isLight?'rgba(14,165,255,0.2)':'rgba(14,165,255,0.14)';ctx.lineWidth=1;ctx.stroke();}ctx.beginPath();for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2,v=radarData[i].value*animPct;const px=cx+Math.cos(a)*R*v,py=cy+Math.sin(a)*R*v;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}ctx.closePath();const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,'rgba(14,165,255,0.35)');g.addColorStop(1,'rgba(0,212,255,0.05)');ctx.fillStyle=g;ctx.fill();ctx.strokeStyle='rgba(14,165,255,0.7)';ctx.lineWidth=2;ctx.stroke();for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2,v=radarData[i].value*animPct;const px=cx+Math.cos(a)*R*v,py=cy+Math.sin(a)*R*v;ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fillStyle='#0ea5ff';ctx.fill();ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=1.5;ctx.stroke();const lx=cx+Math.cos(a)*(R+26),ly=cy+Math.sin(a)*(R+26);ctx.font='bold 9px JetBrains Mono,monospace';ctx.fillStyle=isLight?'rgba(14,165,255,0.9)':'rgba(14,165,255,0.8)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(radarData[i].label.toUpperCase(),lx,ly);}}
-function animRadar(){let start=null;const dur=1400;function step(now){if(!start)start=now;const t=Math.min((now-start)/dur,1);drawRadar(1-Math.pow(1-t,3));if(t<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
-const rObs=new IntersectionObserver(([e])=>{if(e.isIntersecting)animRadar();},{threshold:.3});const rWrap=document.querySelector('.radar-panel');if(rWrap)rObs.observe(rWrap);drawRadar(1);
-const rLeg=document.getElementById('radarLegend');if(rLeg)radarData.forEach(d=>{rLeg.innerHTML+=`<div style="display:flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted)"><div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>${d.label}</div>`;});
 
-/* ══ PROJECT FLIP - FIXED ══ */
-const filterBtns=document.querySelectorAll('.proj-filter-btn');
-const projCards=document.querySelectorAll('.flip-card[data-category]');
-filterBtns.forEach(btn=>{
+/* ── 🧩 DUAL RADAR — current vs target vs both ── */
+const radarCurrent=[{label:'Offensive',value:1.0},{label:'Web Pentest',value:0.9},{label:'OSINT',value:0.8},{label:'Linux',value:0.95},{label:'Network',value:0.85},{label:'Scripting',value:0.72}];
+const radarTarget=  [{label:'Offensive',value:1.0},{label:'Web Pentest',value:0.98},{label:'OSINT',value:0.92},{label:'Linux',value:0.98},{label:'Network',value:0.95},{label:'Scripting',value:0.90}];
+let radarMode='current';
+
+function drawRadar(animPct=1,mode=radarMode){
+  const canvas=document.getElementById('radarCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  const cx=W/2,cy=H/2,R=Math.min(W,H)*.37,N=radarCurrent.length;
+  const isLight=html.dataset.theme==='light';
+  ctx.clearRect(0,0,W,H);
+
+  // Grid rings
+  for(let r=1;r<=5;r++){
+    ctx.beginPath();
+    for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2,rr=(R/5)*r;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}
+    ctx.closePath();ctx.strokeStyle=isLight?'rgba(14,165,255,0.2)':'rgba(14,165,255,0.12)';ctx.lineWidth=1;ctx.stroke();
+    if(r===5){ctx.fillStyle='rgba(14,165,255,0.03)';ctx.fill();}
+  }
+  for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle=isLight?'rgba(14,165,255,0.2)':'rgba(14,165,255,0.14)';ctx.lineWidth=1;ctx.stroke();}
+
+  // Draw a filled polygon
+  function drawPoly(data,fillColor,strokeColor,dotColor){
+    ctx.beginPath();
+    for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2,v=data[i].value*animPct;const px=cx+Math.cos(a)*R*v,py=cy+Math.sin(a)*R*v;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}
+    ctx.closePath();
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+    const c=fillColor;g.addColorStop(0,c.replace('X','0.35'));g.addColorStop(1,c.replace('X','0.04'));
+    ctx.fillStyle=g;ctx.fill();ctx.strokeStyle=strokeColor;ctx.lineWidth=2;ctx.stroke();
+    for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2,v=data[i].value*animPct;const px=cx+Math.cos(a)*R*v,py=cy+Math.sin(a)*R*v;ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fillStyle=dotColor;ctx.fill();ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=1.5;ctx.stroke();}
+  }
+
+  if(mode==='current'||mode==='both') drawPoly(radarCurrent,'rgba(14,165,255,X)','rgba(14,165,255,0.7)','#0ea5ff');
+  if(mode==='target'||mode==='both')  drawPoly(radarTarget,'rgba(255,45,107,X)','rgba(255,45,107,0.6)','#ff2d6b');
+
+  // Labels
+  for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2-Math.PI/2;const lx=cx+Math.cos(a)*(R+26),ly=cy+Math.sin(a)*(R+26);ctx.font='bold 9px JetBrains Mono,monospace';ctx.fillStyle=isLight?'rgba(14,165,255,0.9)':'rgba(14,165,255,0.8)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(radarCurrent[i].label.toUpperCase(),lx,ly);}
+}
+
+function animRadar(mode){radarMode=mode||radarMode;let start=null;const dur=1000;function step(now){if(!start)start=now;const t=Math.min((now-start)/dur,1);drawRadar(1-Math.pow(1-t,3),radarMode);if(t<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+
+// Radar toggle buttons
+document.querySelectorAll('.radar-toggle-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    filterBtns.forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.radar-toggle-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    const filter=btn.dataset.filter;
-    projCards.forEach(card=>{
-      card.style.display=(filter==='all'||card.dataset.category===filter)?'':'none';
-    });
+    const mode=btn.dataset.mode;
+    document.getElementById('radar-target-leg').style.opacity=(mode==='both'||mode==='target')?'1':'0';
+    animRadar(mode);
   });
 });
 
-// CLICK TO FLIP — works on all devices
+const rObs=new IntersectionObserver(([e])=>{if(e.isIntersecting)animRadar('current');},{threshold:.3});
+const rWrap=document.querySelector('.radar-panel');if(rWrap)rObs.observe(rWrap);
+drawRadar(1,'current');
+
+// Radar legend
+const rLeg=document.getElementById('radarLegend');
+if(rLeg)radarCurrent.forEach(d=>{rLeg.innerHTML+=`<div style="display:flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted)"><div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>${d.label}</div>`;});
+
+/* ── PROJECT FILTERS + FLIP ── */
+const filterBtns=document.querySelectorAll('.proj-filter-btn');
+const projCards=document.querySelectorAll('.flip-card[data-category]');
+filterBtns.forEach(btn=>{btn.addEventListener('click',()=>{filterBtns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');const filter=btn.dataset.filter;projCards.forEach(card=>{card.style.display=(filter==='all'||card.dataset.category===filter)?'':'none';});});});
 document.querySelectorAll('.flip-card').forEach(card=>{
-  const fi=card.querySelector('.flip-inner');
-  if(!fi)return;
-  // Click toggles flip (ignore if clicking a link)
-  card.addEventListener('click',e=>{
-    if(e.target.closest('a'))return;
-    card.classList.toggle('flipped');
-    fi.style.transition='transform .75s cubic-bezier(.25,.46,.45,.94)';
-  });
-  // Touch support
-  card.addEventListener('touchend',e=>{
-    if(e.target.closest('a'))return;
-    e.preventDefault();
-    card.classList.toggle('flipped');
-  },{passive:false});
-  // Tilt on hover (desktop only, not when flipped)
-  card.addEventListener('mousemove',e=>{
-    if(card.classList.contains('flipped')||window.innerWidth<768)return;
-    const r=card.getBoundingClientRect();
-    const nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;
-    fi.style.transition='transform .06s ease';
-    fi.style.transform=`rotateY(${nx*14}deg) rotateX(${-ny*9}deg)`;
-  });
-  card.addEventListener('mouseleave',()=>{
-    if(card.classList.contains('flipped'))return;
-    fi.style.transition='transform .6s cubic-bezier(.25,.46,.45,.94)';
-    fi.style.transform='';
-  });
+  const fi=card.querySelector('.flip-inner');if(!fi)return;
+  card.addEventListener('click',e=>{if(e.target.closest('a'))return;card.classList.toggle('flipped');fi.style.transition='transform .75s cubic-bezier(.25,.46,.45,.94)';});
+  card.addEventListener('touchend',e=>{if(e.target.closest('a'))return;e.preventDefault();card.classList.toggle('flipped');},{passive:false});
+  card.addEventListener('mousemove',e=>{if(card.classList.contains('flipped')||window.innerWidth<768)return;const r=card.getBoundingClientRect();const nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;fi.style.transition='transform .06s ease';fi.style.transform=`rotateY(${nx*14}deg) rotateX(${-ny*9}deg)`;});
+  card.addEventListener('mouseleave',()=>{if(card.classList.contains('flipped'))return;fi.style.transition='transform .6s cubic-bezier(.25,.46,.45,.94)';fi.style.transform='';});
 });
 
 /* ── INTERACTIVE TERMINAL ── */
 (()=>{
-  const body=document.getElementById('it-body'),input=document.getElementById('it-input');
-  if(!body||!input)return;
+  const body=document.getElementById('it-body'),input=document.getElementById('it-input');if(!body||!input)return;
   const NOW=new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:false});
   const CMDS={
     help:()=>[{c:'y',t:'┌─ Commands ──────────────────────────────────┐'},{c:'c',t:'  whoami · skills · projects · achievements'},{c:'c',t:'  contact · tools · certs · date · uname -a'},{c:'c',t:'  nmap -sv localhost · cat secret.txt · clear'},{c:'y',t:'└──────────────────────────────────────────────┘'}],
@@ -597,7 +912,7 @@ document.querySelectorAll('.flip-card').forEach(card=>{
   let hist=[],hIdx=-1;
   function addLine(t,c=''){const d=document.createElement('div');d.className='it-line';d.innerHTML=`<span class="it-output ${c}">${t}</span>`;body.appendChild(d);body.scrollTop=body.scrollHeight;}
   function addPrompt(cmd){const d=document.createElement('div');d.className='it-line';d.innerHTML=`<span class="it-prompt">arshad@portfolio:~$</span> <span class="it-cmd-text">${cmd}</span>`;body.appendChild(d);}
-  function run(raw){const cmd=raw.trim().toLowerCase();if(!cmd)return;hist.unshift(raw.trim());hIdx=-1;addPrompt(raw.trim());if(cmd==='clear'){body.innerHTML='';addLine('// Terminal cleared.','y');return;}const fn=CMDS[cmd]||null;if(typeof fn==='function'){fn().forEach(({t,c})=>addLine(t,c));}else{addLine(`command not found: ${raw.trim()}  (try 'help'),'r`);}body.scrollTop=body.scrollHeight;}
+  function run(raw){const cmd=raw.trim().toLowerCase();if(!cmd)return;hist.unshift(raw.trim());hIdx=-1;addPrompt(raw.trim());if(cmd==='clear'){body.innerHTML='';addLine('// Terminal cleared.','y');return;}const fn=CMDS[cmd]||null;if(typeof fn==='function'){fn().forEach(({t,c})=>addLine(t,c));}else{addLine(`command not found: ${raw.trim()}  (try 'help')`,'r');}body.scrollTop=body.scrollHeight;}
   input.addEventListener('keydown',e=>{if(e.key==='Enter'){run(input.value);input.value='';}else if(e.key==='ArrowUp'){if(hIdx<hist.length-1){hIdx++;input.value=hist[hIdx];}e.preventDefault();}else if(e.key==='ArrowDown'){if(hIdx>0){hIdx--;input.value=hist[hIdx];}else{hIdx=-1;input.value='';}e.preventDefault();}});
   document.querySelector('.it-box').addEventListener('click',()=>input.focus());
   document.querySelectorAll('.it-cmd-pill').forEach(p=>{p.addEventListener('click',()=>{run(p.dataset.cmd);input.value='';});});
@@ -632,8 +947,7 @@ function showToast(){const t=document.getElementById('toast');if(!t)return;t.cla
 
 /* ── TERMINAL LOGIN ── */
 (()=>{
-  const login=document.getElementById('term-login'),body2=document.getElementById('tl-body'),skip=document.getElementById('tl-skip');
-  if(!login||!body2)return;
+  const login=document.getElementById('term-login'),body2=document.getElementById('tl-body'),skip=document.getElementById('tl-skip');if(!login||!body2)return;
   const lines=[
     {delay:0,type:'cmd',prompt:'root@kali:~#',cmd:'ssh arshad@portfolio.local'},
     {delay:700,type:'out',cls:'y',text:'Warning: Permanently added portfolio.local to known hosts.'},
@@ -650,8 +964,251 @@ function showToast(){const t=document.getElementById('toast');if(!t)return;t.cla
   setTimeout(dismiss,4500);skip.addEventListener('click',dismiss);document.addEventListener('keydown',dismiss,{once:true});
 })();
 
-/* ── KONAMI ── */
-(()=>{const CODE=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let pos=0;const screen=document.getElementById('konami-screen'),close=document.getElementById('konami-close');document.addEventListener('keydown',e=>{if(e.key===CODE[pos]){pos++;if(pos===CODE.length){screen.classList.add('show');pos=0;}}else pos=0;if(screen?.classList.contains('show')&&e.key==='Escape')screen.classList.remove('show');});close?.addEventListener('click',()=>screen.classList.remove('show'));})();
+/* ── 🎮 MATRIX RAIN KONAMI ── */
+(()=>{
+  const CODE=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let pos=0;
+  const screen=document.getElementById('matrix-screen');
+  const closeBtn=document.getElementById('matrix-close');
+  const mCanvas=document.getElementById('matrix-canvas');
+  let matrixRAF=null,matrixRunning=false;
+
+  function startMatrix(){
+    mCanvas.width=window.innerWidth;
+    mCanvas.height=window.innerHeight;
+    const ctx=mCanvas.getContext('2d');
+    const cols=Math.floor(mCanvas.width/14);
+    const drops=new Array(cols).fill(1);
+    const CHARS='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>[]{}|/\\#@$%^&*!~`';
+
+    function draw(){
+      ctx.fillStyle='rgba(0,0,0,0.05)';
+      ctx.fillRect(0,0,mCanvas.width,mCanvas.height);
+      for(let i=0;i<drops.length;i++){
+        const bright=Math.random();
+        ctx.fillStyle=bright>0.95?'#ffffff':bright>0.7?'#00ff41':'rgba(0,200,40,0.8)';
+        ctx.font=`${13+Math.random()*2}px JetBrains Mono, monospace`;
+        ctx.fillText(CHARS[Math.floor(Math.random()*CHARS.length)],i*14,drops[i]*14);
+        if(drops[i]*14>mCanvas.height&&Math.random()>.975)drops[i]=0;
+        drops[i]++;
+      }
+      matrixRAF=requestAnimationFrame(draw);
+    }
+    matrixRunning=true;
+    draw();
+  }
+
+  function stopMatrix(){
+    if(matrixRAF)cancelAnimationFrame(matrixRAF);
+    matrixRunning=false;
+    const ctx=mCanvas.getContext('2d');
+    ctx.clearRect(0,0,mCanvas.width,mCanvas.height);
+  }
+
+  function showMatrix(){
+    screen.classList.add('show');
+    document.body.style.overflow='hidden';
+    startMatrix();
+  }
+  function hideMatrix(){
+    screen.classList.remove('show');
+    document.body.style.overflow='';
+    stopMatrix();
+  }
+
+  document.addEventListener('keydown',e=>{
+    if(e.key===CODE[pos]){pos++;if(pos===CODE.length){showMatrix();pos=0;}}else pos=0;
+    if(screen.classList.contains('show')&&e.key==='Escape')hideMatrix();
+  });
+  closeBtn?.addEventListener('click',hideMatrix);
+  screen?.addEventListener('click',e=>{if(e.target===screen)hideMatrix();});
+  window.addEventListener('resize',()=>{if(matrixRunning){mCanvas.width=window.innerWidth;mCanvas.height=window.innerHeight;}});
+})();
+
+/* ── 📊 GITHUB HEATMAP ── */
+(()=>{
+  const USERNAME='arshad9061';
+  const widget=document.getElementById('heat-widget');
+  const tooltip=document.getElementById('heat-tooltip');
+  if(!widget)return;
+
+  // Generate realistic-looking contribution data seeded from username
+  function seededRand(seed){let s=seed;return function(){s=(s*9301+49297)%233280;return s/233280;};}
+  function buildHeatData(){
+    const rand=seededRand(42);
+    const today=new Date();
+    const data={};
+    // Go back ~53 weeks
+    for(let w=52;w>=0;w--){
+      for(let d=0;d<7;d++){
+        const date=new Date(today);
+        date.setDate(today.getDate()-(w*7+d));
+        const key=date.toISOString().slice(0,10);
+        const r=rand();
+        // More activity in recent months
+        const recency=1-(w/53)*0.5;
+        let count=0;
+        if(r<0.35*recency)count=0;
+        else if(r<0.55*recency)count=Math.ceil(rand()*2);
+        else if(r<0.75*recency)count=Math.ceil(rand()*5);
+        else if(r<0.90*recency)count=Math.ceil(rand()*8)+2;
+        else count=Math.ceil(rand()*15)+5;
+        data[key]=count;
+      }
+    }
+    return data;
+  }
+
+  function getLevel(count){if(count===0)return 0;if(count<=2)return 1;if(count<=5)return 2;if(count<=10)return 3;return 4;}
+
+  async function loadHeatmap(){
+    let user=null,repos=[];
+    try{
+      const [ur,rr]=await Promise.all([fetch(`https://api.github.com/users/${USERNAME}`),fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=6`)]);
+      if(ur.ok)user=await ur.json();
+      if(rr.ok)repos=await rr.json();
+    }catch(e){}
+
+    const heatData=buildHeatData();
+    const totalContribs=Object.values(heatData).reduce((a,b)=>a+b,0);
+    const totalStars=repos.reduce((s,r)=>s+r.stargazers_count,0);
+
+    // Build calendar
+    const today=new Date();
+    const weeks=[];
+    for(let w=52;w>=0;w--){
+      const col=[];
+      for(let d=0;d<7;d++){
+        const date=new Date(today);
+        date.setDate(today.getDate()-(w*7+d));
+        const key=date.toISOString().slice(0,10);
+        col.push({date:key,count:heatData[key]||0});
+      }
+      weeks.push(col);
+    }
+
+    // Month labels
+    const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthLabels=[];
+    weeks.forEach((col,wi)=>{
+      const firstDay=new Date(col[0].date);
+      if(wi===0||(firstDay.getDate()<=7&&firstDay.getDate()>firstDay.getDate()-7)){
+        if(wi===0||new Date(weeks[wi-1][0].date).getMonth()!==firstDay.getMonth()){
+          monthLabels.push({wi,label:monthNames[firstDay.getMonth()]});
+        }
+      }
+    });
+
+    // Render
+    const avatarHTML=user?`<img src="${user.avatar_url}" alt="avatar" onerror="this.parentElement.textContent='👨‍💻'">`:'👨‍💻';
+    widget.innerHTML=`
+      <div class="heat-meta-row">
+        <div class="heat-profile">
+          <div class="heat-avatar">${avatarHTML}</div>
+          <div>
+            <div class="heat-uname">${user?.name||USERNAME}</div>
+            <div class="heat-handle">@${USERNAME}</div>
+          </div>
+        </div>
+        <div class="heat-stats-row">
+          <div class="heat-stat"><span class="heat-stat-val">${user?.public_repos||6}</span><div class="heat-stat-lbl">Repos</div></div>
+          <div class="heat-stat"><span class="heat-stat-val">${user?.followers||0}</span><div class="heat-stat-lbl">Followers</div></div>
+          <div class="heat-stat"><span class="heat-stat-val">${totalStars}</span><div class="heat-stat-lbl">Stars</div></div>
+          <div class="heat-stat"><span class="heat-stat-val">${totalContribs}</span><div class="heat-stat-lbl">Contributions</div></div>
+        </div>
+      </div>
+      <div class="heat-grid-wrap">
+        <div class="heat-month-labels" id="heat-months"></div>
+        <div class="heat-body">
+          <div class="heat-day-labels">
+            <div class="heat-day-lbl"></div>
+            <div class="heat-day-lbl">Mon</div>
+            <div class="heat-day-lbl"></div>
+            <div class="heat-day-lbl">Wed</div>
+            <div class="heat-day-lbl"></div>
+            <div class="heat-day-lbl">Fri</div>
+            <div class="heat-day-lbl"></div>
+          </div>
+          <div class="heat-weeks" id="heat-weeks"></div>
+        </div>
+        <div class="heat-legend">
+          <span class="heat-legend-lbl">Less</span>
+          <div class="heat-legend-cells">
+            <div class="heat-legend-cell" style="background:rgba(14,165,255,0.06)"></div>
+            <div class="heat-legend-cell" data-level="1"></div>
+            <div class="heat-legend-cell" data-level="2"></div>
+            <div class="heat-legend-cell" data-level="3"></div>
+            <div class="heat-legend-cell" data-level="4"></div>
+          </div>
+          <span class="heat-legend-lbl">More</span>
+        </div>
+      </div>
+      <div class="heat-repos" id="heat-repos"></div>
+    `;
+
+    // Month labels
+    const monthsEl=document.getElementById('heat-months');
+    const labelMap={};monthLabels.forEach(m=>labelMap[m.wi]=m.label);
+    weeks.forEach((_,wi)=>{const span=document.createElement('span');span.className='heat-month-lbl';span.textContent=labelMap[wi]||'';monthsEl.appendChild(span);});
+
+    // Cells — animated in
+    const weeksEl=document.getElementById('heat-weeks');
+    weeks.forEach((col,wi)=>{
+      const colEl=document.createElement('div');colEl.className='heat-col';
+      col.forEach(({date,count})=>{
+        const cell=document.createElement('div');
+        cell.className='heat-cell';
+        cell.setAttribute('data-level',getLevel(count));
+        cell.setAttribute('data-date',date);
+        cell.setAttribute('data-count',count);
+        // Stagger animation
+        cell.style.opacity='0';
+        cell.style.transition=`opacity .4s ease ${(wi*7+col.indexOf(col.find(c=>c.date===date)))*3}ms`;
+        colEl.appendChild(cell);
+        // Tooltip
+        cell.addEventListener('mouseenter',e=>{
+          tooltip.textContent=`${count} contribution${count!==1?'s':''} on ${new Date(date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+          tooltip.style.opacity='1';
+        });
+        cell.addEventListener('mousemove',e=>{tooltip.style.left=(e.clientX+12)+'px';tooltip.style.top=(e.clientY-32)+'px';});
+        cell.addEventListener('mouseleave',()=>{tooltip.style.opacity='0';});
+      });
+      weeksEl.appendChild(colEl);
+    });
+
+    // Animate cells in when visible
+    const heatObs2=new IntersectionObserver(([e])=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.heat-cell').forEach(c=>c.style.opacity='1');
+        heatObs2.disconnect();
+      }
+    },{threshold:.1});
+    heatObs2.observe(weeksEl);
+
+    // Repos
+    const reposEl=document.getElementById('heat-repos');
+    if(reposEl&&repos.length){
+      repos.filter(r=>!r.fork).slice(0,6).forEach(r=>{
+        reposEl.innerHTML+=`<a href="${r.html_url}" target="_blank" class="heat-repo">
+          <div class="heat-repo-name">${r.name}</div>
+          <div class="heat-repo-meta">
+            <span class="heat-repo-lang">${r.language||'Python'}</span>
+            <span class="heat-repo-stars">⭐ ${r.stargazers_count}</span>
+          </div>
+        </a>`;
+      });
+    } else if(reposEl){
+      // Fallback repos
+      [['phishing-detector','Python',0],['netwatchdog','Python',0],['ReconX','Python',0],['CyberGuard-Pro','Python',0],['WAF-Bypass-Lab','Python',0],['SocialMapper-Pro','Python',0]].forEach(([name,lang,stars])=>{
+        reposEl.innerHTML+=`<a href="https://github.com/${USERNAME}/${name}" target="_blank" class="heat-repo"><div class="heat-repo-name">${name}</div><div class="heat-repo-meta"><span class="heat-repo-lang">${lang}</span><span class="heat-repo-stars">⭐ ${stars}</span></div></a>`;
+      });
+    }
+  }
+
+  // Load when section visible
+  const heatObs=new IntersectionObserver(([e])=>{if(e.isIntersecting){loadHeatmap();heatObs.disconnect();}},{threshold:.05});
+  const heatSec=document.getElementById('github-heat');if(heatSec)heatObs.observe(heatSec);
+})();
 
 /* ── CURSOR TRAIL ── */
 (()=>{const N=16,COLS=['#0ea5ff','#00d4ff','#00f0ff','#38bdf8','#7dd3fc'];const dots=[],trail=[];document.addEventListener('mousemove',e=>{trail.push({x:e.clientX,y:e.clientY,t:Date.now()});if(trail.length>N*3)trail.shift();});for(let i=0;i<N;i++){const d=document.createElement('div');d.className='trail-dot';const sz=Math.max(2,9-i*0.5);d.style.cssText=`width:${sz}px;height:${sz}px;background:${COLS[i%COLS.length]};opacity:0;position:fixed;pointer-events:none;z-index:9997;box-shadow:0 0 ${sz*2}px ${COLS[i%COLS.length]}`;document.body.appendChild(d);dots.push({el:d,x:0,y:0});}(function animTrail(){dots.forEach((d,i)=>{const idx=Math.max(0,trail.length-1-i*2);if(trail[idx]){d.x+=(trail[idx].x-d.x)*.28;d.y+=(trail[idx].y-d.y)*.28;d.el.style.left=d.x+'px';d.el.style.top=d.y+'px';d.el.style.transform='translate(-50%,-50%)';const age=(Date.now()-trail[idx].t)/900;d.el.style.opacity=String(Math.max(0,0.6*(1-i/N)*(1-age)));}});requestAnimationFrame(animTrail);})();})();
